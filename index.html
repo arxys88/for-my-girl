@@ -112,8 +112,16 @@
     <div id="lock-screen" class="maltese-card w-full p-6 sm:p-10 text-center transition-all duration-300">
       
       <!-- 超大抱抱主視覺插圖 -->
+<!-- 改造後：加上右上角「戳我一下」的互動引導標籤 -->
       <div class="relative max-w-md mx-auto mb-6 flex flex-col items-center justify-center">
-        <div class="w-full aspect-square max-h-[340px] rounded-3xl overflow-hidden border-3 border-[#2B2625] shadow-[4px_4px_0px_#2B2625] bg-[#EBF4FA] cursor-pointer wiggle-hover" onclick="pokeDog()">
+        
+        <!-- 🌟 右上角互動小提示 (自帶彈跳動畫，點擊後自動隱藏) 🌟 -->
+        <div id="poke-hint-badge" class="absolute -top-3 -right-2 z-30 bg-[#FFDB58] text-[#2B2625] text-[11px] sm:text-xs font-black px-3 py-1 rounded-full border-2 border-[#2B2625] shadow-[2px_2px_0px_#2B2625] flex items-center gap-1 animate-bounce pointer-events-none">
+          <span>👆</span>
+          <span>戳我一下嘛！</span>
+        </div>
+
+        <div class="w-full aspect-square max-h-[340px] rounded-3xl overflow-hidden border-3 border-[#2B2625] shadow-[4px_4px_0px_#2B2625] bg-[#EBF4FA] cursor-pointer wiggle-hover transition-transform active:scale-95" onclick="pokeDog()">
           <img 
             id="img-hug-main"
             src="images/dog-hug.png" 
@@ -122,15 +130,17 @@
             onerror="this.onerror=null; this.src='https://i.pinimg.com/736x/2f/80/59/2f805990e046997fd2dc7193380a96fc.jpg';"
           />
         </div>
+
         <!-- 點擊小狗跳出的暖心對話氣泡 -->
-        <div id="dog-bubble" class="hidden absolute -bottom-3 bg-white text-xs sm:text-sm font-black px-4 py-1.5 rounded-2xl border-2 border-[#2B2625] shadow-[3px_3px_0px_#2B2625] z-20 animate-bounce">
-          汪！快輸入密碼見我～
-        </div>
+<!-- 移除 class 裡的 hidden，讓它一進來就顯示 -->
+<div id="dog-bubble" class="absolute -bottom-3 bg-white text-xs sm:text-sm font-black px-4 py-1.5 rounded-2xl border-2 border-[#2B2625] shadow-[3px_3px_0px_#2B2625] z-20 animate-bounce">
+  汪！快輸入密碼見我～
+</div>
       </div>
 
       <h1 class="text-xl sm:text-2xl font-black tracking-wide mb-2 text-[#2B2625]">寶貝專屬情緒錦囊</h1>
       <p class="text-xs sm:text-sm text-stone-600 mb-6 font-medium leading-relaxed max-w-md mx-auto">
-        不管世界有多吵鬧、有多累，只要點開這裡我就在。<br>輸入我們的專屬暗號，打開滿滿的元氣吧 🐾
+        不管世界有多吵鬧、有多累，只要點開這裡我就在🐾
       </p>
 
       <form id="unlock-form" class="max-w-sm mx-auto space-y-4">
@@ -139,7 +149,7 @@
             type="password" 
             id="password-input" 
             maxlength="16" 
-            placeholder="請輸入密碼 (預設: 520)" 
+            placeholder="請輸入密碼 (我寶寶的生日)" 
             class="w-full text-center text-lg sm:text-xl font-black tracking-widest px-4 py-3.5 rounded-2xl bg-[#FFFDF0] border-3 border-[#2B2625] focus:outline-none focus:bg-white placeholder:text-stone-300 transition"
             required
             autocomplete="off"
@@ -155,10 +165,10 @@
 
       <p id="password-hint" class="text-xs sm:text-sm text-rose-500 mt-3 font-black min-h-[1.5rem]"></p>
       
-      <div class="mt-4 pt-3 border-t-2 border-dashed border-stone-200 text-stone-400 text-xs flex items-center justify-center gap-1 font-bold">
+      <!-- <div class="mt-4 pt-3 border-t-2 border-dashed border-stone-200 text-stone-400 text-xs flex items-center justify-center gap-1 font-bold">
         <span>💡 通關密碼預設是</span>
         <span class="font-mono font-black text-[#2B2625] bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-300">520</span>
-      </div>
+      </div> -->
     </div>
 
     <!-- 畫面 2: 解鎖後的 3 大核心頁籤面板 -->
@@ -436,7 +446,7 @@
      * 🛠️ CONFIG 自訂設定區（統一管理所有 15 張圖片路徑與文字）
      * ========================================================================= */
     const CONFIG = {
-      PASSWORD: "520",
+      PASSWORD: "0428",
 
       // 15 張圖片的路徑清單（若你的檔名是 .jpg，請在下方對應位置修改為 .jpg）
       IMAGES: {
@@ -560,7 +570,7 @@
     });
 
     // 點擊大抱抱小狗跳出彩蛋語錄
-    const dogQuotes = ["汪！摸摸頭不哭～", "寶貝今天超級棒！", "我在睡覺也有在想妳喔 💤", "抱緊處理！不准不開心！", "明天請妳吃好吃的犒賞妳！"];
+    const dogQuotes = ["汪！摸摸頭不哭～", "寶貝今天超級棒！", "我在睡覺也有在想妳喔 💤", "抱緊處理！不准不開心！"];
     let quoteIdx = 0;
     function pokeDog() {
       const bubble = document.getElementById('dog-bubble');
@@ -585,7 +595,7 @@
           lucide.createIcons();
         }, 300);
       } else {
-        passwordHint.textContent = "密碼不對喔～想想我們的默契！(預設: 520)";
+        passwordHint.textContent = "密碼不對喔～";
         passwordInput.classList.add('ring-2', 'ring-rose-400');
         setTimeout(() => passwordInput.classList.remove('ring-2', 'ring-rose-400'), 1200);
       }
