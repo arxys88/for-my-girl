@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>專屬情緒錦囊 ✨ 線條小狗溫暖陪伴</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Zen Maru Gothic & Quicksand -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Zen Maru Gothic', 'Quicksand', -apple-system, sans-serif;
+      background-color: #FFFDF0; /* 經典線條小狗暖奶油黃 */
+      background-image: 
+        radial-gradient(#FFE8A3 16%, transparent 17%),
+        radial-gradient(#FFE8A3 16%, transparent 17%);
+      background-size: 44px 44px;
+      background-position: 0 0, 22px 22px;
+      min-height: 100vh;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 正版 Maltese 手繪粗黑邊風格 */
+    .maltese-card {
+      background: #FFFFFF;
+      border: 3px solid #2B2625;
+      border-radius: 32px;
+      box-shadow: 6px 6px 0px #2B2625;
+      transition: all 0.2s ease;
+    }
+
+    .maltese-btn {
+      border: 2.5px solid #2B2625;
+      box-shadow: 3px 3px 0px #2B2625;
+      transition: transform 0.1s, box-shadow 0.1s, background-color 0.15s;
+    }
+    .maltese-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0px 0px 0px #2B2625;
+    }
+
+    /* 拍立得大相片風格 */
+    .polaroid-frame {
+      background: #FFFFFF;
+      border: 2.5px solid #2B2625;
+      box-shadow: 4px 4px 0px #2B2625;
+      border-radius: 20px;
+      padding: 12px 12px 16px 12px;
+      transition: transform 0.2s ease;
+    }
+    .polaroid-frame:hover {
+      transform: translateY(-4px) rotate(1deg);
+    }
+
+    /* 逗趣小狗微晃動畫 */
+    @keyframes wiggleDog {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-3deg) scale(1.02); }
+      75% { transform: rotate(3deg) scale(1.02); }
+    }
+    .wiggle-hover:hover {
+      animation: wiggleDog 0.6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="relative flex flex-col justify-between text-[#2B2625] antialiased min-h-screen pb-6">
+
+  <!-- 頂部大橫幅：兩隻奔跑小狗向彼此飛奔 -->
+  <header class="relative z-10 w-full max-w-4xl mx-auto px-4 pt-6 pb-2">
+    <div class="maltese-card p-3 sm:p-4 flex items-center justify-between bg-white/95">
+      
+      <!-- 左邊小白狗飛奔 -->
+      <div class="flex items-center gap-2">
+        <img id="img-run-white" src="images/dog-run-white.png" alt="小白奔跑" class="w-12 h-12 sm:w-16 sm:h-16 object-contain wiggle-hover" onerror="this.style.opacity='0.2'">
+        <div>
+          <span class="inline-block text-[10px] sm:text-xs font-black tracking-wider text-rose-500 uppercase bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
+            For My Precious Girl
+          </span>
+          <h2 class="text-xs sm:text-sm font-black text-[#2B2625]">專屬情緒錦囊 💌</h2>
+        </div>
+      </div>
+
+      <!-- 右邊小金毛飛奔 -->
+      <div class="flex items-center gap-2">
+        <div class="text-right hidden sm:block">
+          <span class="text-xs font-bold text-emerald-600 flex items-center gap-1 justify-end">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            隨時隨地守護妳
+          </span>
+          <p class="text-[11px] text-stone-400">累了就躲進來吧 🐾</p>
+        </div>
+        <img id="img-run-gold" src="images/dog-run-gold.png" alt="金毛奔跑" class="w-12 h-12 sm:w-16 sm:h-16 object-contain wiggle-hover" onerror="this.style.opacity='0.2'">
+      </div>
+
+    </div>
+  </header>
+
+  <!-- 主要互動內容區（大幅擴展至 max-w-4xl） -->
+  <main class="relative z-10 w-full max-w-4xl mx-auto px-4 py-3 flex-grow flex items-center justify-center">
+
+    <!-- 畫面 1: 密碼解鎖頁面 (超大草地抱抱主圖) -->
+    <div id="lock-screen" class="maltese-card w-full p-6 sm:p-10 text-center transition-all duration-300">
+      
+      <!-- 超大抱抱主視覺插圖 -->
+      <div class="relative max-w-md mx-auto mb-6 flex flex-col items-center justify-center">
+        <div class="w-full aspect-square max-h-[340px] rounded-3xl overflow-hidden border-3 border-[#2B2625] shadow-[4px_4px_0px_#2B2625] bg-[#EBF4FA] cursor-pointer wiggle-hover" onclick="pokeDog()">
+          <img 
+            id="img-hug-main"
+            src="images/dog-hug.png" 
+            alt="線條小狗草地抱抱" 
+            class="w-full h-full object-cover"
+            onerror="this.onerror=null; this.src='https://i.pinimg.com/736x/2f/80/59/2f805990e046997fd2dc7193380a96fc.jpg';"
+          />
+        </div>
+        <!-- 點擊小狗跳出的暖心對話氣泡 -->
+        <div id="dog-bubble" class="hidden absolute -bottom-3 bg-white text-xs sm:text-sm font-black px-4 py-1.5 rounded-2xl border-2 border-[#2B2625] shadow-[3px_3px_0px_#2B2625] z-20 animate-bounce">
+          汪！快輸入密碼見我～
+        </div>
+      </div>
+
+      <h1 class="text-xl sm:text-2xl font-black tracking-wide mb-2 text-[#2B2625]">寶貝專屬情緒錦囊</h1>
+      <p class="text-xs sm:text-sm text-stone-600 mb-6 font-medium leading-relaxed max-w-md mx-auto">
+        不管世界有多吵鬧、有多累，只要點開這裡我就在。<br>輸入我們的專屬暗號，打開滿滿的元氣吧 🐾
+      </p>
+
+      <form id="unlock-form" class="max-w-sm mx-auto space-y-4">
+        <div>
+          <input 
+            type="password" 
+            id="password-input" 
+            maxlength="16" 
+            placeholder="請輸入密碼 (預設: 520)" 
+            class="w-full text-center text-lg sm:text-xl font-black tracking-widest px-4 py-3.5 rounded-2xl bg-[#FFFDF0] border-3 border-[#2B2625] focus:outline-none focus:bg-white placeholder:text-stone-300 transition"
+            required
+            autocomplete="off"
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          class="maltese-btn w-full py-3.5 bg-[#FFDB58] hover:bg-[#FFD233] text-[#2B2625] font-black rounded-2xl text-base flex items-center justify-center gap-2">
+          <span>解開錦囊 🌸</span>
+        </button>
+      </form>
+
+      <p id="password-hint" class="text-xs sm:text-sm text-rose-500 mt-3 font-black min-h-[1.5rem]"></p>
+      
+      <div class="mt-4 pt-3 border-t-2 border-dashed border-stone-200 text-stone-400 text-xs flex items-center justify-center gap-1 font-bold">
+        <span>💡 通關密碼預設是</span>
+        <span class="font-mono font-black text-[#2B2625] bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-300">520</span>
+      </div>
+    </div>
+
+    <!-- 畫面 2: 解鎖後的 3 大核心頁籤面板 -->
+    <div id="main-dashboard" class="hidden w-full space-y-5 transition-all duration-300">
+      
+      <!-- 頂部頁籤切換按鈕（大尺寸） -->
+      <div class="maltese-card p-2 flex items-center justify-between gap-2 sm:gap-4">
+        <button onclick="switchTab('letter')" id="tab-btn-letter" class="maltese-btn flex-1 py-3 px-2 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 bg-[#FF8080] text-white">
+          <i data-lucide="heart" class="w-4 h-4"></i>
+          <span>想抱抱妳</span>
+        </button>
+        <button onclick="switchTab('joke')" id="tab-btn-joke" class="maltese-btn flex-1 py-3 px-2 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 bg-[#FFFDF0] text-[#2B2625]">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>說個笑話</span>
+        </button>
+        <button onclick="switchTab('video')" id="tab-btn-video" class="maltese-btn flex-1 py-3 px-2 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 bg-[#FFFDF0] text-[#2B2625]">
+          <i data-lucide="video" class="w-4 h-4"></i>
+          <span>逗妳影片</span>
+        </button>
+      </div>
+
+ <!-- ================= 頁籤 1: 想抱抱妳 ================= -->
+      <div id="panel-letter" class="maltese-card p-6 sm:p-8 transition-all duration-300">
+        
+        <!-- 大圖展示：草地躺平看雲圖 (dog-grass-roll.png) -->
+        <div class="w-full rounded-2xl overflow-hidden border-3 border-[#2B2625] shadow-[4px_4px_0px_#2B2625] mb-5 bg-[#A8D5BA] aspect-[16/9] max-h-[320px]">
+          <img id="img-grass-roll" src="images/dog-grass-roll.png" alt="草地躺平看雲" class="w-full h-full object-cover" onerror="this.style.opacity='0.2'">
+        </div>
+
+        <div class="flex items-center justify-between mb-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-xs sm:text-sm font-black border border-rose-200">
+            <span>💌</span> 小雞毛的悄悄話
+          </span>
+          <span id="letter-counter" class="text-xs sm:text-sm text-stone-400 font-mono font-black">1 / 4</span>
+        </div>
+
+        <h2 id="letter-title" class="text-base sm:text-lg font-black text-[#2B2625] mb-3">
+          給最棒的妳 🌸
+        </h2>
+
+        <!-- 信件內容卡片 -->
+        <div class="bg-[#FFFDF0] rounded-2xl p-5 sm:p-6 border-3 border-[#2B2625] mb-4 shadow-inner">
+          <p id="letter-body" class="text-stone-700 text-sm sm:text-base leading-relaxed whitespace-pre-line font-bold">
+            寶貝，我知道妳現在可能覺得很累、或是有一點委屈。不用逼自己馬上好起來，哪怕什麼都不想做也完全沒關係，有我在後面頂著妳呢！
+          </p>
+        </div>
+
+        <!-- 🌟 按鈕已移至此處（信件正下方、毛線牽一輩子上方） 🌟 -->
+        <button onclick="nextLetter()" class="maltese-btn w-full py-3.5 bg-[#FFDB58] hover:bg-[#FFD233] text-[#2B2625] font-black rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 mb-6">
+          <i data-lucide="repeat" class="w-4 h-4"></i>
+          <span>換下一封信 / 再看一段悄悄話 ✉️</span>
+        </button>
+
+        <!-- 專題插圖：毛線衣相牽 (dog-knit-white.png + dog-knit-gold.png) -->
+        <div class="bg-[#FFF9C9] p-4 sm:p-5 rounded-3xl border-3 border-[#2B2625] shadow-[4px_4px_0px_#2B2625] mb-6 overflow-hidden">
+          <div class="relative flex items-center justify-center max-w-2xl mx-auto">
+            <div class="absolute top-[62%] left-12 right-12 h-1 bg-[#D97736] rounded-full -translate-y-1/2 z-0 hidden sm:block"></div>
+            <div class="relative z-10 w-28 h-28 sm:w-36 sm:h-36 flex-shrink-0 flex items-center justify-center">
+              <img 
+                id="img-knit-white" 
+                src="images/dog-knit-white.png" 
+                alt="白狗穿毛線" 
+                class="w-full h-full object-contain hover:scale-105 transition-transform duration-200" 
+                onerror="this.style.display='none'"
+              />
+            </div>
+            <div class="relative z-10 mx-2 sm:mx-4 px-4 py-2.5 sm:px-6 sm:py-3 bg-white/95 rounded-2xl border-2 border-[#2B2625] shadow-[2px_2px_0px_#2B2625] text-center flex-shrink-0">
+              <span class="inline-flex items-center gap-1 text-xs sm:text-sm font-black text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
+                🧶 毛線牽一輩子
+              </span>
+              <p class="text-xs sm:text-sm text-stone-700 mt-1 font-black whitespace-nowrap">
+                線的一端是妳，另一端永遠是我 💕
+              </p>
+            </div>
+            <div class="relative z-10 w-28 h-28 sm:w-36 sm:h-36 flex-shrink-0 flex items-center justify-center">
+              <img 
+                id="img-knit-gold" 
+                src="images/dog-knit-gold.png" 
+                alt="金毛穿毛線" 
+                class="w-full h-full object-contain hover:scale-105 transition-transform duration-200" 
+                onerror="this.style.display='none'"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- 拍立得照片牆：摸頭安慰 + 按摩放鬆 (dog-comfort.png, dog-massage.png) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="polaroid-frame text-center">
+            <div class="w-full aspect-square rounded-xl overflow-hidden bg-amber-50 border border-stone-200 mb-2 flex items-center justify-center">
+              <img id="img-comfort" src="images/dog-comfort.png" alt="摸摸頭安慰" class="w-full h-full object-contain p-2" onerror="this.style.opacity='0.2'">
+            </div>
+            <span class="text-xs sm:text-sm font-black text-stone-700">摸摸頭，委屈都散掉 🐾</span>
+          </div>
+
+          <div class="polaroid-frame text-center">
+            <div class="w-full aspect-square rounded-xl overflow-hidden bg-amber-50 border border-stone-200 mb-2 flex items-center justify-center">
+              <img id="img-massage" src="images/dog-massage.png" alt="小狗按摩" class="w-full h-full object-contain p-2" onerror="this.style.opacity='0.2'">
+            </div>
+            <span class="text-xs sm:text-sm font-black text-stone-700">筋骨放鬆，萬事有我 💆</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= 頁籤 2: 說個笑話 ================= -->
+      <div id="panel-joke" class="hidden maltese-card p-6 sm:p-8 transition-all duration-300">
+        
+        <!-- 大圖展示：雙狗舉手萬歲狂歡 (dog-cheer.png) -->
+        <div class="w-full rounded-2xl overflow-hidden border-3 border-[#2B2625] shadow-[4px_4px_0px_#2B2625] mb-5 bg-[#FFE8A3] aspect-[16/9] max-h-[300px] flex items-center justify-center p-2">
+          <img id="img-cheer" src="images/dog-cheer.png" alt="雙狗歡呼" class="w-full h-full object-contain" onerror="this.style.opacity='0.2'">
+        </div>
+
+        <div class="flex items-center justify-between mb-3">
+          <span class="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 text-[#2B2625] rounded-full text-xs sm:text-sm font-black border border-amber-300">
+            <span>🤭</span> 冷笑話開心果
+          </span>
+          <span id="joke-counter" class="text-xs sm:text-sm text-stone-400 font-mono font-black">1 / 4</span>
+        </div>
+
+        <!-- 笑話問題與解答卡片 -->
+        <div class="bg-[#FFFDF0] rounded-2xl p-5 sm:p-6 border-3 border-[#2B2625] mb-5 min-h-[140px] flex flex-col justify-between shadow-inner">
+          <div>
+            <div class="flex items-start gap-2 mb-2">
+              <span class="font-black text-amber-600 text-base sm:text-lg">Q:</span>
+              <p id="joke-question" class="text-stone-800 text-sm sm:text-base font-black leading-relaxed">
+                皮卡丘站起來會變什麼？
+              </p>
+            </div>
+
+            <div id="punchline-container" class="mt-3 pt-3 border-t-2 border-dashed border-stone-200 hidden">
+              <div class="flex items-start gap-2">
+                <span class="font-black text-rose-500 text-base sm:text-lg">A:</span>
+                <p id="joke-answer" class="text-rose-600 text-sm sm:text-base font-black leading-relaxed">
+                  皮卡兵
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button id="reveal-joke-btn" onclick="revealPunchline()" class="maltese-btn mt-3 w-full py-2.5 bg-[#FFF2B2] hover:bg-amber-200 text-[#2B2625] rounded-xl text-xs sm:text-sm font-black">
+            點擊查看答案 🔍
+          </button>
+        </div>
+
+        <button onclick="nextJoke()" class="maltese-btn w-full py-3 bg-[#F2EFE9] hover:bg-stone-200 text-stone-700 font-black rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 mb-6">
+          <i data-lucide="shuffle" class="w-4 h-4"></i>
+          <span>換下一個笑話 😂</span>
+        </button>
+
+        <!-- 搞笑特輯：杯子透視大鼻子 (dog-glass-white.png, dog-glass-gold.png) -->
+        <div class="border-t-2 border-dashed border-stone-200 pt-5 mb-5">
+          <h3 class="text-xs sm:text-sm font-black text-center mb-3 text-stone-600">
+            🐶 搞笑大鼻子專題：看完不准不笑！
+          </h3>
+          <div class="grid grid-cols-2 gap-3 sm:gap-4">
+            <div class="polaroid-frame text-center">
+              <div class="w-full aspect-square rounded-xl overflow-hidden bg-white border border-stone-200 mb-1 flex items-center justify-center">
+                <img id="img-glass-white" src="images/dog-glass-white.png" alt="小白杯子透視" class="w-full h-full object-contain p-1 wiggle-hover" onerror="this.style.opacity='0.2'">
+              </div>
+              <span class="text-[11px] sm:text-xs font-black">小白的大鼻子 👃</span>
+            </div>
+
+            <div class="polaroid-frame text-center">
+              <div class="w-full aspect-square rounded-xl overflow-hidden bg-white border border-stone-200 mb-1 flex items-center justify-center">
+                <img id="img-glass-gold" src="images/dog-glass-gold.png" alt="金毛酒杯透視" class="w-full h-full object-contain p-1 wiggle-hover" onerror="this.style.opacity='0.2'">
+              </div>
+              <span class="text-[11px] sm:text-xs font-black">金毛的乾杯臉 🍷</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 飛馳開飛機大插圖 (dog-fly.png) -->
+        <!-- 修正後：等比例方形拍立得，完整看到白狗與金毛貼地滑行 -->
+        <div class="polaroid-frame text-center max-w-[340px] sm:max-w-[380px] mx-auto">
+            <div class="w-full aspect-square rounded-2xl overflow-hidden bg-white border-2 border-stone-200 mb-2 flex items-center justify-center p-3">
+                <img 
+                    id="img-fly" 
+                    src="images/dog-fly.png" 
+                    alt="小狗飛馳" 
+                    class="w-full h-full object-contain hover:scale-105 transition-transform duration-200" 
+                    onerror="this.style.opacity='0.2'"
+                />
+            </div>
+                <span class="text-xs sm:text-sm font-black text-stone-700 block mt-1">
+                    小狗貼地滑行～全力衝過來給妳抱抱！💨
+                </span>
+        </div>
+
+      </div>
+
+      <!-- ================= 頁籤 3: 逗妳影片 ================= -->
+      <div id="panel-video" class="hidden maltese-card p-6 sm:p-8 transition-all duration-300">
+        
+        <!-- 大圖展示：大月亮吃餅乾 (dog-moon.png) -->
+        <div class="max-w-[280px] sm:max-w-[320px] mx-auto rounded-3xl overflow-hidden border-3 border-[#2B2625] shadow-[4px_4px_0px_#2B2625] mb-5 bg-[#2B3956] aspect-square flex items-center justify-center p-1">
+            <img id="img-moon" src="images/dog-moon.png" alt="大月亮吃餅乾" class="w-full h-full object-contain rounded-2xl" onerror="this.style.opacity='0.2'">
+        </div>
+
+        <div class="flex items-center justify-between mb-3 px-1">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-xs sm:text-sm font-black border border-rose-200">
+            <span>🎬</span> 專屬說笑話影片
+          </span>
+          <span class="text-xs text-stone-400 font-black">笑一個笑一個笑一個 💕</span>
+        </div>
+
+        <!-- 影片播放器 (加大清晰度) -->
+        <div class="relative w-full rounded-2xl overflow-hidden bg-black border-3 border-[#2B2625] mb-5 aspect-video max-h-[460px] flex items-center justify-center shadow-md">
+          <video 
+            id="joke-video" 
+            controls 
+            playsinline 
+            preload="metadata"
+            class="w-full h-full object-contain">
+            <source src="video.mp4" type="video/mp4">
+            您的瀏覽器不支援影片播放。
+          </video>
+
+          <div id="video-fallback" class="hidden absolute inset-0 bg-[#2B2625] text-stone-200 p-4 flex flex-col items-center justify-center text-center">
+            <i data-lucide="video-off" class="w-8 h-8 text-rose-400 mb-2"></i>
+            <p class="text-sm font-black text-stone-100">尚未放入「video.mp4」影片檔</p>
+            <p class="text-xs text-stone-400 mt-1">請將錄好的影片命名為 video.mp4 放在同資料夾喔！</p>
+          </div>
+        </div>
+
+        <!-- 影片下方大插圖專題：中秋月亮合照 + 長椅看書/喝珍奶 -->
+        <div class="space-y-4">
+          <!-- 月亮揮手合照 (dog-moon-hug.png) -->
+          <div class="polaroid-frame text-center">
+            <div class="w-full max-h-[220px] rounded-xl overflow-hidden bg-sky-900 border border-stone-200 mb-1 flex items-center justify-center">
+              <img id="img-moon-hug" src="images/dog-moon-hug.png" alt="月亮合照" class="w-full h-full object-contain p-2" onerror="this.style.opacity='0.2'">
+            </div>
+            <span class="text-xs sm:text-sm font-black text-stone-700">不管在哪裡，抬頭看月亮就像看著彼此 🌕</span>
+          </div>
+
+          <!-- 長椅午後時光 (dog-bench-read.png, dog-bench-boba.png) -->
+          <div class="grid grid-cols-2 gap-3 sm:gap-4">
+
+            <div class="polaroid-frame text-center">
+              <div class="w-full aspect-square rounded-xl overflow-hidden bg-amber-50 border border-stone-200 mb-1 flex items-center justify-center">
+                <img id="img-bench-boba" src="images/dog-bench-boba.png" alt="金毛喝珍奶" class="w-full h-full object-contain p-2" onerror="this.style.opacity='0.2'">
+              </div>
+              <span class="text-[11px] sm:text-xs font-black">請妳喝全糖波霸奶茶 🧋</span>
+            </div>
+
+
+            <div class="polaroid-frame text-center">
+              <div class="w-full aspect-square rounded-xl overflow-hidden bg-amber-50 border border-stone-200 mb-1 flex items-center justify-center">
+                <img id="img-bench-read" src="images/dog-bench-read.png" alt="小白看書" class="w-full h-full object-contain p-2" onerror="this.style.opacity='0.2'">
+              </div>
+              <span class="text-[11px] sm:text-xs font-black">讀一本好書，靜靜陪妳 📖</span>
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 重新鎖定按鈕 -->
+      <div class="flex items-center justify-between px-3 pt-2 text-xs sm:text-sm text-stone-400 font-bold">
+        <button onclick="lockScreenAgain()" class="hover:text-stone-700 underline">鎖定錦囊 🔒</button>
+        <span>いつでもそばにいるよ（隨時都在身邊）❤️</span>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="relative z-10 py-4 text-center text-xs font-black text-stone-400">
+    Made with love • 線條小狗陪伴每一天 🐾
+  </footer>
+
+  <script>
+    /* =========================================================================
+     * 🛠️ CONFIG 自訂設定區（統一管理所有 15 張圖片路徑與文字）
+     * ========================================================================= */
+    const CONFIG = {
+      PASSWORD: "520",
+
+      // 15 張圖片的路徑清單（若你的檔名是 .jpg，請在下方對應位置修改為 .jpg）
+      IMAGES: {
+        hugMain: "images/dog-hug.png",
+        runWhite: "images/dog-run-white.png",
+        runGold: "images/dog-run-gold.png",
+        grassRoll: "images/dog-grass-roll.png",
+        knitWhite: "images/dog-knit-white.png",
+        knitGold: "images/dog-knit-gold.png",
+        comfort: "images/dog-comfort.png",
+        massage: "images/dog-massage.png",
+        cheer: "images/dog-cheer.png",
+        glassWhite: "images/dog-glass-white.png",
+        glassGold: "images/dog-glass-gold.png",
+        fly: "images/dog-fly.png",
+        moon: "images/dog-moon.png",
+        moonHug: "images/dog-moon-hug.png",
+        benchRead: "images/dog-bench-read.png",
+        benchBoba: "images/dog-bench-boba.png"
+      },
+
+      LETTERS: [
+        {
+          title: "給最棒的妳 🌸",
+          body: "寶貝，我知道妳現在可能覺得很累、或是有一點委屈。\n不用逼自己馬上好起來，哪怕什麼都不想做也完全沒關係，有我在後面頂著妳呢！"
+        },
+        {
+          title: "我在這，一直都在 🐻",
+          body: "我可能因為在忙沒能第一秒回覆妳，但我心裡時時刻刻都記掛著妳。\n閉上眼睛深呼吸一下，把這當成我給妳的一個大大的熊抱！"
+        },
+        {
+          title: "不管怎樣我都愛妳 💕",
+          body: "最喜歡妳開開心心的樣子，但妳沮喪脆弱的樣子我也一樣珍惜。\n世界可能很糟，生活也過的一蹋糊塗，但妳隨時可以躲進我的懷裡避避風頭，今天妳已經很棒了！"
+        },
+        {
+          title: "今天辛苦了，乖乖 🧸",
+          body: "哪怕今天只是好好活著、喝了一杯水，都已經超級厲害了。\n不要對自己太嚴苛，今晚早點休息，明天可以找我討拍拍好嘛！"
+        }
+      ],
+
+      JOKES: [
+        {
+          q: "皮卡丘站起來會變什麼？",
+          a: "皮卡兵"
+        },
+        {
+          q: "種瓜得瓜？",
+          a: "中暑丟沙！"
+        },
+        {
+          q: "大鬼島在台灣，那請問小鬼島在哪裡？",
+          a: "小鬼倒在浴室裡..."
+        },
+        {
+          q: "歷史上誰最愛吃零食？",
+          a: "袁世凱，因為他是零食大總統"
+        }
+      ],
+
+      VIDEO_SRC: "video.mp4"
+    };
+
+    /* =========================================================================
+     * 系統控制邏輯
+     * ========================================================================= */
+    const lockScreen = document.getElementById('lock-screen');
+    const mainDashboard = document.getElementById('main-dashboard');
+    const unlockForm = document.getElementById('unlock-form');
+    const passwordInput = document.getElementById('password-input');
+    const passwordHint = document.getElementById('password-hint');
+
+    const panelLetter = document.getElementById('panel-letter');
+    const panelJoke = document.getElementById('panel-joke');
+    const panelVideo = document.getElementById('panel-video');
+
+    const tabBtnLetter = document.getElementById('tab-btn-letter');
+    const tabBtnJoke = document.getElementById('tab-btn-joke');
+    const tabBtnVideo = document.getElementById('tab-btn-video');
+
+    const jokeVideo = document.getElementById('joke-video');
+    const videoFallback = document.getElementById('video-fallback');
+
+    let currentLetterIndex = 0;
+    let currentJokeIndex = 0;
+
+    lucide.createIcons();
+
+    // 注入所有自訂圖片路徑
+    function applyImages() {
+      const mapping = {
+        'img-hug-main': CONFIG.IMAGES.hugMain,
+        'img-run-white': CONFIG.IMAGES.runWhite,
+        'img-run-gold': CONFIG.IMAGES.runGold,
+        'img-grass-roll': CONFIG.IMAGES.grassRoll,
+        'img-knit-white': CONFIG.IMAGES.knitWhite,
+        'img-knit-gold': CONFIG.IMAGES.knitGold,
+        'img-comfort': CONFIG.IMAGES.comfort,
+        'img-massage': CONFIG.IMAGES.massage,
+        'img-cheer': CONFIG.IMAGES.cheer,
+        'img-glass-white': CONFIG.IMAGES.glassWhite,
+        'img-glass-gold': CONFIG.IMAGES.glassGold,
+        'img-fly': CONFIG.IMAGES.fly,
+        'img-moon': CONFIG.IMAGES.moon,
+        'img-moon-hug': CONFIG.IMAGES.moonHug,
+        'img-bench-read': CONFIG.IMAGES.benchRead,
+        'img-bench-boba': CONFIG.IMAGES.benchBoba
+      };
+
+      for (const [id, src] of Object.entries(mapping)) {
+        const el = document.getElementById(id);
+        if (el && src) el.src = src;
+      }
+    }
+    applyImages();
+
+    // 影片載入防呆
+    jokeVideo.src = CONFIG.VIDEO_SRC;
+    jokeVideo.addEventListener('error', () => {
+      videoFallback.classList.remove('hidden');
+      lucide.createIcons();
+    });
+
+    // 點擊大抱抱小狗跳出彩蛋語錄
+    const dogQuotes = ["汪！摸摸頭不哭～", "寶貝今天超級棒！", "我在睡覺也有在想妳喔 💤", "抱緊處理！不准不開心！", "明天請妳吃好吃的犒賞妳！"];
+    let quoteIdx = 0;
+    function pokeDog() {
+      const bubble = document.getElementById('dog-bubble');
+      bubble.textContent = dogQuotes[quoteIdx % dogQuotes.length];
+      bubble.classList.remove('hidden');
+      quoteIdx++;
+      confetti({ particleCount: 25, spread: 50, origin: { y: 0.55 } });
+      setTimeout(() => bubble.classList.add('hidden'), 2500);
+    }
+
+    // 解鎖密碼
+    unlockForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (passwordInput.value.trim() === CONFIG.PASSWORD) {
+        confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+        passwordHint.textContent = "";
+        lockScreen.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+          lockScreen.classList.add('hidden');
+          mainDashboard.classList.remove('hidden');
+          mainDashboard.classList.add('opacity-100', 'scale-100');
+          lucide.createIcons();
+        }, 300);
+      } else {
+        passwordHint.textContent = "密碼不對喔～想想我們的默契！(預設: 520)";
+        passwordInput.classList.add('ring-2', 'ring-rose-400');
+        setTimeout(() => passwordInput.classList.remove('ring-2', 'ring-rose-400'), 1200);
+      }
+    });
+
+    function lockScreenAgain() {
+      if (!jokeVideo.paused) jokeVideo.pause();
+      mainDashboard.classList.add('hidden');
+      lockScreen.classList.remove('hidden', 'opacity-0', 'scale-95');
+      passwordInput.value = "";
+      passwordHint.textContent = "";
+    }
+
+    function switchTab(tab) {
+      if (tab !== 'video' && !jokeVideo.paused) jokeVideo.pause();
+
+      panelLetter.classList.add('hidden');
+      panelJoke.classList.add('hidden');
+      panelVideo.classList.add('hidden');
+
+      const normalClass = "maltese-btn flex-1 py-3 px-2 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 bg-[#FFFDF0] text-[#2B2625]";
+      tabBtnLetter.className = normalClass;
+      tabBtnJoke.className = normalClass;
+      tabBtnVideo.className = normalClass;
+
+      if (tab === 'letter') {
+        panelLetter.classList.remove('hidden');
+        tabBtnLetter.className = "maltese-btn flex-1 py-3 px-2 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 bg-[#FF8080] text-white";
+      } else if (tab === 'joke') {
+        panelJoke.classList.remove('hidden');
+        tabBtnJoke.className = "maltese-btn flex-1 py-3 px-2 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 bg-[#FFD233] text-[#2B2625]";
+      } else if (tab === 'video') {
+        panelVideo.classList.remove('hidden');
+        tabBtnVideo.className = "maltese-btn flex-1 py-3 px-2 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 bg-[#60A5FA] text-white";
+      }
+      lucide.createIcons();
+    }
+
+    function renderLetter() {
+      const letter = CONFIG.LETTERS[currentLetterIndex];
+      document.getElementById('letter-title').textContent = letter.title;
+      document.getElementById('letter-body').textContent = letter.body;
+      document.getElementById('letter-counter').textContent = `${currentLetterIndex + 1} / ${CONFIG.LETTERS.length}`;
+    }
+
+    function nextLetter() {
+      currentLetterIndex = (currentLetterIndex + 1) % CONFIG.LETTERS.length;
+      renderLetter();
+    }
+
+    function renderJoke() {
+      const joke = CONFIG.JOKES[currentJokeIndex];
+      document.getElementById('joke-question').textContent = joke.q;
+      document.getElementById('joke-answer').textContent = joke.a;
+      document.getElementById('joke-counter').textContent = `${currentJokeIndex + 1} / ${CONFIG.JOKES.length}`;
+      document.getElementById('punchline-container').classList.add('hidden');
+      document.getElementById('reveal-joke-btn').classList.remove('hidden');
+    }
+
+    function revealPunchline() {
+      document.getElementById('punchline-container').classList.remove('hidden');
+      document.getElementById('reveal-joke-btn').classList.add('hidden');
+    }
+
+    function nextJoke() {
+      currentJokeIndex = (currentJokeIndex + 1) % CONFIG.JOKES.length;
+      renderJoke();
+    }
+
+    renderLetter();
+    renderJoke();
+  </script>
+</body>
+</html>
