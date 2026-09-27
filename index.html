@@ -144,6 +144,16 @@
       </p>
 
       <form id="unlock-form" class="max-w-sm mx-auto space-y-4">
+        <!-- 🌟 「我不想打密碼」調皮逃跑按鈕 🌟 -->
+      <div class="mt-4 flex justify-center">
+        <button 
+          type="button" 
+          id="escape-btn" 
+          onclick="handleEscapeClick()"
+          class="maltese-btn py-2 px-4 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-xl text-xs sm:text-sm font-black transition-all duration-200">
+          我不想打密碼 🥺
+        </button>
+      </div>
         <div>
           <input 
             type="password" 
@@ -667,7 +677,66 @@
 
     renderLetter();
     renderJoke();
-// git add .
+
+    /* =========================================================================
+     * 🐶 「我不想打密碼」調皮逃跑計數機制
+     * ========================================================================= */
+    let escapeClicks = 0;
+    const escapeTexts = [
+      "我真的不想打密碼！",
+      "我真的真的真的不想打密碼 🐾",
+      "好啦好啦～真的最後一次了！🥺",
+      "懶懶小白～真拿你沒辦法 💕"
+    ];
+
+    function handleEscapeClick() {
+      escapeClicks++;
+      const btn = document.getElementById('escape-btn');
+
+      // 每次點擊噴出少量小紙花增添逗趣感
+      confetti({ particleCount: 15, spread: 45, origin: { y: 0.7 } });
+
+      if (escapeClicks >= 4) {
+        // 點滿 4 次：大彩帶放行，解鎖進入主頁面！
+        btn.textContent = escapeTexts[3];
+        confetti({ particleCount: 80, spread: 90, origin: { y: 0.6 } });
+        
+        setTimeout(() => {
+          lockScreen.classList.add('opacity-0', 'scale-95');
+          setTimeout(() => {
+            lockScreen.classList.add('hidden');
+            mainDashboard.classList.remove('hidden');
+            mainDashboard.classList.add('opacity-100', 'scale-100');
+            lucide.createIcons();
+            // 重置按鈕狀態，避免下次鎖定後位置錯亂
+            btn.style.position = 'static';
+            btn.textContent = "我不想打密碼 🥺";
+            escapeClicks = 0;
+          }, 300);
+        }, 500);
+
+      } else {
+        // 前 1~3 次：換文字 + 隨機跳到螢幕其他位置
+        btn.textContent = escapeTexts[escapeClicks - 1];
+
+        // 轉換為 fixed 定位，讓按鈕能在螢幕視窗內任意跳躍
+        btn.style.position = 'fixed';
+        btn.style.zIndex = '999';
+
+        // 計算安全邊界，避免跑出螢幕外
+        const btnWidth = btn.offsetWidth || 180;
+        const btnHeight = btn.offsetHeight || 44;
+        const maxX = window.innerWidth - btnWidth - 24;
+        const maxY = window.innerHeight - btnHeight - 24;
+
+        const randomX = Math.max(24, Math.floor(Math.random() * maxX));
+        const randomY = Math.max(24, Math.floor(Math.random() * maxY));
+
+        btn.style.left = `${randomX}px`;
+        btn.style.top = `${randomY}px`;
+      }
+    }
+//git add .
 //git commit -m "update contents"
 //git push
   </script>
