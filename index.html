@@ -451,14 +451,14 @@
     Made with love • 線條小狗陪伴每一天 🐾
   </footer>
 
-  <script>
+<script>
     /* =========================================================================
-     * 🛠️ CONFIG 自訂設定區（統一管理所有 15 張圖片路徑與文字）
+     * 🛠️ CONFIG 自訂設定區
      * ========================================================================= */
     const CONFIG = {
       PASSWORD: "0428",
 
-      // 15 張圖片的路徑清單（若你的檔名是 .jpg，請在下方對應位置修改為 .jpg）
+      // 15 張圖片的路徑清單
       IMAGES: {
         hugMain: "images/dog-hug.png",
         runWhite: "images/dog-run-white.png",
@@ -520,7 +520,42 @@
     };
 
     /* =========================================================================
-     * 系統控制邏輯
+     * 📢 雙層 Discord Webhook 推播機制
+     * ========================================================================= */
+    const NOTIFY_WEBHOOK_URL = "https://discord.com/api/webhooks/1554048000412745768/O-_pq5YFzZslocz3_iAw2EH6aT4tpYvbeSQ8HXKMKCvyvu8uPKrdFd53SAVTQSPCWaUv";
+
+    function sendCapsuleAlert(actionType) {
+      if (!NOTIFY_WEBHOOK_URL) return;
+
+      const now = new Date();
+      const timeStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      let message = "";
+      if (actionType === "PAGE_OPEN") {
+        message = `👀【錦囊造訪】有人點開了情緒錦囊首頁！（時間：${timeStr}）`;
+      } else if (actionType === "UNLOCKED_PASSWORD") {
+        message = `💖【成功解鎖】寶貝輸入了正確密碼進去看內容了！（時間：${timeStr}）`;
+      } else if (actionType === "UNLOCKED_ESCAPE") {
+        message = `🐾【調皮放行】寶貝連續點了 4 次不想打密碼進去囉！（時間：${timeStr}）`;
+      }
+
+      fetch(NOTIFY_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: message })
+      }).catch(() => {});
+    }
+
+    // 第一層推播：同次造訪只推播一次，防洗版
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!sessionStorage.getItem('opened_alert_sent')) {
+        sendCapsuleAlert("PAGE_OPEN");
+        sessionStorage.setItem('opened_alert_sent', 'true');
+      }
+    });
+
+    /* =========================================================================
+     * 系統控制邏輯與 DOM 綁定
      * ========================================================================= */
     const lockScreen = document.getElementById('lock-screen');
     const mainDashboard = document.getElementById('main-dashboard');
@@ -583,6 +618,9 @@
     const dogQuotes = ["汪！摸摸頭不哭～", "寶貝今天超級棒！", "我在睡覺也有在想妳喔 💤", "抱緊處理！不准不開心！"];
     let quoteIdx = 0;
     function pokeDog() {
+      const hintBadge = document.getElementById('poke-hint-badge');
+      if (hintBadge) hintBadge.style.display = 'none';
+
       const bubble = document.getElementById('dog-bubble');
       bubble.textContent = dogQuotes[quoteIdx % dogQuotes.length];
       bubble.classList.remove('hidden');
@@ -591,10 +629,13 @@
       setTimeout(() => bubble.classList.add('hidden'), 2500);
     }
 
-    // 解鎖密碼
+    // 解鎖密碼處理
     unlockForm.addEventListener('submit', (e) => {
       e.preventDefault();
       if (passwordInput.value.trim() === CONFIG.PASSWORD) {
+        // 第二層推播：密碼正確解鎖
+        sendCapsuleAlert("UNLOCKED_PASSWORD");
+
         confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
         passwordHint.textContent = "";
         lockScreen.classList.add('opacity-0', 'scale-95');
@@ -605,7 +646,7 @@
           lucide.createIcons();
         }, 300);
       } else {
-        passwordHint.textContent = "密碼不對喔～";
+        passwordHint.textContent = "密碼不對喔～想想妳的生日 (4碼)";
         passwordInput.classList.add('ring-2', 'ring-rose-400');
         setTimeout(() => passwordInput.classList.remove('ring-2', 'ring-rose-400'), 1200);
       }
@@ -675,6 +716,7 @@
       renderJoke();
     }
 
+    // 初始化笑話與信件
     renderLetter();
     renderJoke();
 
@@ -697,7 +739,9 @@
       confetti({ particleCount: 15, spread: 45, origin: { y: 0.7 } });
 
       if (escapeClicks >= 4) {
-        // 點滿 4 次：大彩帶放行，解鎖進入主頁面！
+        // 第二層推播：點滿4次免密碼放行
+        sendCapsuleAlert("UNLOCKED_ESCAPE");
+
         btn.textContent = escapeTexts[3];
         confetti({ particleCount: 80, spread: 90, origin: { y: 0.6 } });
         
@@ -708,7 +752,7 @@
             mainDashboard.classList.remove('hidden');
             mainDashboard.classList.add('opacity-100', 'scale-100');
             lucide.createIcons();
-            // 重置按鈕狀態，避免下次鎖定後位置錯亂
+            // 重置按鈕狀態
             btn.style.position = 'static';
             btn.textContent = "我不想打密碼 🥺";
             escapeClicks = 0;
@@ -716,14 +760,10 @@
         }, 500);
 
       } else {
-        // 前 1~3 次：換文字 + 隨機跳到螢幕其他位置
         btn.textContent = escapeTexts[escapeClicks - 1];
-
-        // 轉換為 fixed 定位，讓按鈕能在螢幕視窗內任意跳躍
         btn.style.position = 'fixed';
         btn.style.zIndex = '999';
 
-        // 計算安全邊界，避免跑出螢幕外
         const btnWidth = btn.offsetWidth || 180;
         const btnHeight = btn.offsetHeight || 44;
         const maxX = window.innerWidth - btnWidth - 24;
@@ -736,10 +776,13 @@
         btn.style.top = `${randomY}px`;
       }
     }
-//git add .
-//git commit -m "update contents"
-//git push
+
+// git add .
+// git commit -m "fix: resolve js syntax errors and alert triggers"
+// git push
   </script>
+
+
 
 </body>
 </html>
